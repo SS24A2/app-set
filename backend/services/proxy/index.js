@@ -1,0 +1,70 @@
+const fileUpload = require("express-fileupload");
+const express = require("express");
+const proxy = require("express-http-proxy");
+const cors = require("cors");
+
+const config = require("../../pkg/config");
+
+const app = express();
+
+app.use(cors({ origin: "http://localhost:5173" }));
+
+app.use(
+  "/api/v1/storage",
+  proxy("http://127.0.0.1:10001", {
+    limit: '5mb',
+    proxyReqPathResolver: (req) => {
+      const path = `/api/v1/storage${req.url}`;
+      console.log("[Proxy] Forwarding to:", path);
+      return path;
+    },
+  })
+);
+// http://localhost:3000/api/v1/storage
+
+app.use(
+  "/api/v1/auth",
+  proxy("http://127.0.0.1:10002", {
+    proxyReqPathResolver: (req) => {
+      const path = `/api/v1/auth${req.url}`;
+      console.log("[Proxy] Forwarding to:", path);
+      return path;
+    },
+  })
+);
+// http://localhost:3000/api/v1/auth
+
+app.use(
+  "/api/v1/posts",
+  proxy("http://127.0.0.1:10003", {
+    proxyReqPathResolver: (req) => {
+      const path = `/api/v1/posts${req.url}`;
+      console.log("[Proxy] Forwarding to:", path);
+      return path;
+    },
+  })
+);
+// http://localhost:3000/api/v1/posts
+
+app.use(
+  "/api/v1/cars",
+  proxy("http://127.0.0.1:10004", {
+    proxyReqPathResolver: (req) => {
+      const path = `/api/v1/cars${req.url}`;
+      console.log("[Proxy] Forwarding to:", path);
+      return path;
+    },
+  })
+);
+// http://localhost:3000/api/v1/cars
+
+// Za da ja imame portata vo process.env.PORT treba da rabotime so dotenv
+const PORT = process.env.PORT || config.getSection("services").proxy.port;
+
+app.listen(PORT, (err) => {
+  if (err) {
+    console.log(err);
+    return err;
+  }
+  console.log("Service [proxy] successfully started on port", PORT);
+});
