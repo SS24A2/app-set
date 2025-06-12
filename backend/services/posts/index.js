@@ -1,5 +1,4 @@
 const express = require("express");
-const jwt = require("express-jwt");
 
 const config = require("../../pkg/config");
 const db = require("../../pkg/db");
@@ -9,13 +8,6 @@ db.init();
 
 const api = express();
 api.use(express.json())
-
-api.use(
-  jwt.expressjwt({
-    algorithms: ["HS256"],
-    secret: config.getSection("security").jwt_secret,
-  })
-);
 
 api.get("/api/v1/posts", posts.getAll);
 api.get("/api/v1/posts/:id", posts.getSingle);

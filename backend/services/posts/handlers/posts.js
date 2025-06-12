@@ -3,7 +3,7 @@ const { BlogPOST, BlogPUT, validate } = require("../../../pkg/posts/validate");
 
 const getAll = async (req, res) => {
   try {
-    const data = await post.getAll(req.auth.id);
+    const data = await post.getAll(req.headers.id);
     return res.status(200).send(data);
   } catch (err) {
     console.error(err);
@@ -13,7 +13,7 @@ const getAll = async (req, res) => {
 
 const getSingle = async (req, res) => {
   try {
-    const data = await post.getSingle(req.auth.id, req.params.id);
+    const data = await post.getSingle(req.headers.id, req.params.id);
 
     if (!data) {
       return res.status(404).send("Post not found!");
@@ -29,10 +29,9 @@ const getSingle = async (req, res) => {
 const create = async (req, res) => {
   try {
     await validate(req.body, BlogPOST);
-    console.log("new post", req.body)
     const data = {
       ...req.body,
-      account_id: req.auth.id,
+      account_id: req.headers.id,
     };
 
     const newPost = await post.create(data);
@@ -49,7 +48,7 @@ const update = async (req, res) => {
 
     const data = {
       ...req.body,
-      account_id: req.auth.id,
+      account_id: req.headers.id,
     };
 
     await post.update(req.params.id, data);
@@ -62,13 +61,13 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    const foundPost = await post.getSingle(req.auth.id, req.params.id);
+    const foundPost = await post.getSingle(req.headers.id, req.params.id);
     if (!foundPost) {
       return res.status(500).send("Post not found!");
     }
 
     await post.remove(req.params.id);
-    return res.status(200).send("Deleted successful");
+    return res.status(200).send("Deleted successfuly");
   } catch (err) {
     console.error(err);
     return res.status(500).send("Internal server error");

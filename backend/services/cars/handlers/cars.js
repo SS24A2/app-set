@@ -4,8 +4,8 @@ const { CarPOST, CarPUT, validate } = require("../../../pkg/cars/validate");
 
 const getVehicle = async (req, res) => {
     try {
-        const cars = await cars.get();
-        return res.status(200).send(cars);
+        const allCars = await cars.get();
+        return res.status(200).send(allCars);
     } catch (err) {
         console.log(err);
         return res.status(500).send("Internal Server Error!");
