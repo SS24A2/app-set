@@ -108,3 +108,6 @@ app.listen(PORT, (err) => {
   }
   console.log("Service [proxy] successfully started on port", PORT);
 });
+
+
+module.exports = app
